@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+
+  fluentbit:
+    container_name: fluentbit
+    image: fluent/fluent-bit
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+    ports:
+      - "2020:2020"
+      - "24224:24224"
+
+  nginx:
+    container_name: nginx
+    image: nginx
+    ports:
+      - "8080:80"
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: "docker_container_{{ .Name }}_{{ .ID }}"
+    depends_on:
+      - fluentbit
