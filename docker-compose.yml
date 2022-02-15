@@ -2,6 +2,10 @@ version: "3"
 
 services:
 
+  loki:
+    container_name: loki
+    image: grafana/loki
+
   fluentbit:
     container_name: fluentbit
     image: fluent/fluent-bit
@@ -10,7 +14,17 @@ services:
     ports:
       - "2020:2020"
       - "24224:24224"
+    depends_on:
+      - loki
 
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    ports:
+      - "3000:3000"
+      
   nginx:
     container_name: nginx
     image: nginx
@@ -23,3 +37,6 @@ services:
         tag: "docker_container_{{ .Name }}_{{ .ID }}"
     depends_on:
       - fluentbit
+
+volumes:
+  grafana-storage:
