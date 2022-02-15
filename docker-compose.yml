@@ -11,6 +11,7 @@ services:
     image: fluent/fluent-bit
     volumes:
       - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./parsers.conf:/fluent-bit/etc/parsers.conf
     ports:
       - "2020:2020"
       - "24224:24224"
@@ -34,7 +35,7 @@ services:
       driver: fluentd
       options:
         fluentd-address: localhost:24224
-        tag: "docker_container_{{ .Name }}_{{ .ID }}"
+        tag: "docker_container_nginx_{{ .Name }}_{{ .ID }}"
     depends_on:
       - fluentbit
 
